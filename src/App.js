@@ -1,13 +1,60 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import NotFoundPage from './pages/NotFoundPage';
+
+function PlaceholderView({ title, subtitle }) {
+  return (
+    <section className="page-section">
+      <div className="section-header">
+        <h1>{title}</h1>
+        <p>{subtitle}</p>
+      </div>
+    </section>
+  );
+}
 
 function App() {
   return (
-    <div className="app-shell">
-      <main className="main-container">
-        <h1>EventPulse — Event Management System</h1>
-        <p>Explore live events, view details, and manage registrations.</p>
-      </main>
-    </div>
+    <Router>
+      <div className="app-shell">
+        <Navbar />
+        <main className="main-container">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <PlaceholderView
+                  title="Discover Live Events Around You"
+                  subtitle="Search concerts, sports, theatre, and festivals."
+                />
+              }
+            />
+            <Route
+              path="/events"
+              element={
+                <PlaceholderView
+                  title="Explore Events"
+                  subtitle="Browse upcoming events from the Ticketmaster Discovery API."
+                />
+              }
+            />
+            <Route
+              path="/my-events"
+              element={
+                <PlaceholderView
+                  title="My Registered Events"
+                  subtitle="Manage your upcoming and completed event registrations."
+                />
+              }
+            />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
   );
 }
 
