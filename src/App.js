@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -45,10 +46,12 @@ function App() {
             <Route
               path="/my-events"
               element={
-                <PlaceholderView
-                  title="My Registered Events"
-                  subtitle="Manage your upcoming and completed event registrations."
-                />
+                <ProtectedRoute>
+                  <PlaceholderView
+                    title="My Registered Events"
+                    subtitle="Manage your upcoming and completed event registrations."
+                  />
+                </ProtectedRoute>
               }
             />
             <Route path="/login" element={<LoginPage />} />
@@ -63,4 +66,3 @@ function App() {
 }
 
 export default App;
-

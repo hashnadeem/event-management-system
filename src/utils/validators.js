@@ -47,3 +47,4 @@ export function validateRegisterForm({ name, email, password, confirmPassword })
 
   return errors;
 }
+
