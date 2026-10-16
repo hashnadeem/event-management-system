@@ -1,7 +1,11 @@
 import React, { useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchEventById, clearSelectedEvent } from '../features/events/eventsSlice';
+import {
+  registerForEvent,
+  cancelRegistration,
+} from '../features/registrations/registrationsSlice';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 
 function formatFullDate(localDate, localTime) {
@@ -31,9 +35,17 @@ function formatFullDate(localDate, localTime) {
 function EventDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const { selectedEvent: event, detailLoading, detailError } = useSelector((state) => state.events);
+  const { isAuthenticated, currentUser } = useSelector((state) => state.auth);
+  const userKey = currentUser?.email || currentUser?.id || null;
+
+  const userRegistrations = useSelector((state) =>
+    userKey ? state.registrations.byUser[userKey] || [] : []
+  );
+  const registrationRecord = userRegistrations.find((reg) => reg.eventId === id);
 
   useEffect(() => {
     if (id) {
@@ -43,6 +55,19 @@ function EventDetailsPage() {
       dispatch(clearSelectedEvent());
     };
   }, [dispatch, id]);
+
+  const handleRegister = () => {
+    if (!isAuthenticated || !userKey) {
+      navigate('/login', { state: { from: location } });
+      return;
+    }
+    dispatch(registerForEvent({ userKey, event }));
+  };
+
+  const handleCancelRegistration = () => {
+    if (!userKey || !event) return;
+    dispatch(cancelRegistration({ userKey, eventId: event.id }));
+  };
 
   if (detailLoading) {
     return (
@@ -132,26 +157,52 @@ function EventDetailsPage() {
             </div>
           </div>
 
-          <div className="details-cta-row">
-            {event.url && (
+          {registrationRecord ? (
+            <div className="registration-status-box">
+              <div className="registration-status-info">
+                <span className="registered-pill">Registered ✓</span>
+                <span>
+                  Confirmation ID: <strong>{registrationRecord.registrationId}</strong>
+                </span>
+              </div>
+              <div className="registration-status-actions">
+                <Link to="/my-events" className="btn btn-outline btn-sm">
+                  View in My Events
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleCancelRegistration}
+                  className="btn btn-danger btn-sm"
+                >
+                  Cancel Registration
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="details-cta-row">
+              <button type="button" onClick={handleRegister} className="btn btn-primary">
+                {isAuthenticated ? 'Register for This Event' : 'Log In to Register'}
+              </button>
+              {event.url && (
+                <a
+                  href={event.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-outline"
+                >
+                  Official Ticketmaster Listing ↗
+                </a>
+              )}
               <a
-                href={event.url}
+                href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-outline"
               >
-                Official Ticketmaster Listing ↗
+                Open Venue in Maps ↗
               </a>
-            )}
-            <a
-              href={googleMapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-outline"
-            >
-              Open Venue in Maps ↗
-            </a>
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
