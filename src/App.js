@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import EventsPage from './pages/EventsPage';
 import EventDetailsPage from './pages/EventDetailsPage';
+import MyEventsPage from './pages/MyEventsPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 function PlaceholderView({ title, subtitle }) {
@@ -42,10 +43,7 @@ function App() {
               path="/my-events"
               element={
                 <ProtectedRoute>
-                  <PlaceholderView
-                    title="My Registered Events"
-                    subtitle="Manage your upcoming and completed event registrations."
-                  />
+                  <MyEventsPage />
                 </ProtectedRoute>
               }
             />
