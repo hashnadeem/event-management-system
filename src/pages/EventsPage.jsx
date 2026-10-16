@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchEvents } from '../features/events/eventsSlice';
+import { fetchEvents, resetFilters } from '../features/events/eventsSlice';
 import EventCard from '../components/EventCard';
+import CategoryStrip from '../components/CategoryStrip';
+import SearchFilterBar from '../components/SearchFilterBar';
 
 function EventsPage() {
   const dispatch = useDispatch();
@@ -35,6 +37,9 @@ function EventsPage() {
         )}
       </div>
 
+      <CategoryStrip />
+      <SearchFilterBar />
+
       {error && (
         <div className="error-state-card" role="alert">
           <h3>Could not load events</h3>
@@ -59,6 +64,13 @@ function EventsPage() {
         <div className="empty-state-card">
           <h3>No matching events found</h3>
           <p>Try adjusting your search keywords or clearing active filters.</p>
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={() => dispatch(resetFilters())}
+          >
+            Reset Filters
+          </button>
         </div>
       )}
 
