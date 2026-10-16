@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { loginUser, clearAuthMessages } from '../features/auth/authSlice';
+import { validateLoginForm } from '../utils/validators';
 
 function LoginPage() {
   const dispatch = useDispatch();
@@ -13,6 +14,7 @@ function LoginPage() {
     email: '',
     password: '',
   });
+  const [errors, setErrors] = useState({});
 
   const redirectPath = location.state?.from?.pathname || '/events';
 
@@ -29,11 +31,19 @@ function LoginPage() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.email.trim() || !formData.password) return;
+    const validationErrors = validateLoginForm(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+    setErrors({});
     dispatch(loginUser(formData));
   };
 
@@ -48,7 +58,7 @@ function LoginPage() {
 
         {authError && <div className="form-alert form-alert-error">{authError}</div>}
 
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit} className="auth-form" noValidate>
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
             <input
@@ -58,8 +68,9 @@ function LoginPage() {
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
-              required
+              className={errors.email ? 'input-error' : ''}
             />
+            {errors.email && <span className="field-error">{errors.email}</span>}
           </div>
 
           <div className="form-group">
@@ -71,8 +82,9 @@ function LoginPage() {
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
-              required
+              className={errors.password ? 'input-error' : ''}
             />
+            {errors.password && <span className="field-error">{errors.password}</span>}
           </div>
 
           <button type="submit" className="btn btn-primary btn-block">

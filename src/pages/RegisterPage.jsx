@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { registerUser, clearAuthMessages } from '../features/auth/authSlice';
+import { validateRegisterForm } from '../utils/validators';
 
 function RegisterPage() {
   const dispatch = useDispatch();
@@ -14,6 +15,7 @@ function RegisterPage() {
     password: '',
     confirmPassword: '',
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     dispatch(clearAuthMessages());
@@ -28,11 +30,20 @@ function RegisterPage() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.email.trim() || !formData.password) return;
+    const validationErrors = validateRegisterForm(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
     dispatch(
       registerUser({
         name: formData.name,
@@ -53,7 +64,7 @@ function RegisterPage() {
 
         {authError && <div className="form-alert form-alert-error">{authError}</div>}
 
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit} className="auth-form" noValidate>
           <div className="form-group">
             <label htmlFor="name">Full Name</label>
             <input
@@ -63,8 +74,9 @@ function RegisterPage() {
               placeholder="Enter your full name"
               value={formData.name}
               onChange={handleChange}
-              required
+              className={errors.name ? 'input-error' : ''}
             />
+            {errors.name && <span className="field-error">{errors.name}</span>}
           </div>
 
           <div className="form-group">
@@ -76,8 +88,9 @@ function RegisterPage() {
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
-              required
+              className={errors.email ? 'input-error' : ''}
             />
+            {errors.email && <span className="field-error">{errors.email}</span>}
           </div>
 
           <div className="form-group">
@@ -89,8 +102,9 @@ function RegisterPage() {
               placeholder="At least 6 characters"
               value={formData.password}
               onChange={handleChange}
-              required
+              className={errors.password ? 'input-error' : ''}
             />
+            {errors.password && <span className="field-error">{errors.password}</span>}
           </div>
 
           <div className="form-group">
@@ -102,8 +116,11 @@ function RegisterPage() {
               placeholder="Re-enter your password"
               value={formData.confirmPassword}
               onChange={handleChange}
-              required
+              className={errors.confirmPassword ? 'input-error' : ''}
             />
+            {errors.confirmPassword && (
+              <span className="field-error">{errors.confirmPassword}</span>
+            )}
           </div>
 
           <button type="submit" className="btn btn-primary btn-block">
