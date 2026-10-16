@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import EventsPage from './pages/EventsPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 function PlaceholderView({ title, subtitle }) {
@@ -34,15 +35,7 @@ function App() {
                 />
               }
             />
-            <Route
-              path="/events"
-              element={
-                <PlaceholderView
-                  title="Explore Events"
-                  subtitle="Browse upcoming events from the Ticketmaster Discovery API."
-                />
-              }
-            />
+            <Route path="/events" element={<EventsPage />} />
             <Route
               path="/my-events"
               element={
