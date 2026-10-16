@@ -4,6 +4,7 @@ import { fetchEvents, resetFilters } from '../features/events/eventsSlice';
 import EventCard from '../components/EventCard';
 import CategoryStrip from '../components/CategoryStrip';
 import SearchFilterBar from '../components/SearchFilterBar';
+import Pagination from '../components/Pagination';
 
 function EventsPage() {
   const dispatch = useDispatch();
@@ -75,11 +76,14 @@ function EventsPage() {
       )}
 
       {!loading && !error && items.length > 0 && (
-        <div className="events-grid">
-          {items.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
-        </div>
+        <>
+          <div className="events-grid">
+            {items.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </div>
+          <Pagination />
+        </>
       )}
     </section>
   );
