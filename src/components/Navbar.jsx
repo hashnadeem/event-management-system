@@ -1,7 +1,27 @@
 import React from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { logoutUser } from '../features/auth/authSlice';
 
 function Navbar() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated, currentUser } = useSelector((state) => state.auth);
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate('/login');
+  };
+
+  const userInitials = currentUser?.name
+    ? currentUser.name
+        .split(' ')
+        .map((part) => part[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase()
+    : 'U';
+
   return (
     <header className="navbar">
       <div className="navbar-inner">
@@ -23,12 +43,26 @@ function Navbar() {
         </nav>
 
         <div className="nav-actions">
-          <Link to="/login" className="btn btn-outline">
-            Log In
-          </Link>
-          <Link to="/register" className="btn btn-primary">
-            Sign Up
-          </Link>
+          {isAuthenticated && currentUser ? (
+            <div className="user-session-bar">
+              <div className="user-chip" title={currentUser.email}>
+                <span className="user-avatar">{userInitials}</span>
+                <span className="user-name">{currentUser.name}</span>
+              </div>
+              <button type="button" onClick={handleLogout} className="btn btn-outline btn-sm">
+                Log Out
+              </button>
+            </div>
+          ) : (
+            <>
+              <Link to="/login" className="btn btn-outline">
+                Log In
+              </Link>
+              <Link to="/register" className="btn btn-primary">
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
