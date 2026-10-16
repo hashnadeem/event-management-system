@@ -1,5 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { registerForEvent } from '../features/registrations/registrationsSlice';
 
 function formatEventDate(localDate, localTime) {
   if (!localDate) return 'Date TBA';
@@ -36,7 +38,26 @@ function getStatusBadge(status) {
 }
 
 function EventCard({ event, actionSlot }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { isAuthenticated, currentUser } = useSelector((state) => state.auth);
+  const userKey = currentUser?.email || currentUser?.id || null;
+  const userRegistrations = useSelector((state) =>
+    userKey ? state.registrations.byUser[userKey] || [] : []
+  );
+
+  const isRegistered = userRegistrations.some((reg) => reg.eventId === event.id);
   const statusBadge = getStatusBadge(event.status);
+
+  const handleQuickRegister = () => {
+    if (!isAuthenticated || !userKey) {
+      navigate('/login', { state: { from: location } });
+      return;
+    }
+    dispatch(registerForEvent({ userKey, event }));
+  };
 
   return (
     <article className="event-card">
@@ -66,10 +87,23 @@ function EventCard({ event, actionSlot }) {
         )}
 
         <div className="event-card-footer">
-          <Link to={`/events/${event.id}`} className="btn btn-primary btn-sm">
+          <Link to={`/events/${event.id}`} className="btn btn-outline btn-sm">
             View Details
           </Link>
-          {actionSlot}
+
+          {actionSlot || (
+            isRegistered ? (
+              <span className="registered-pill">Registered ✓</span>
+            ) : (
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                onClick={handleQuickRegister}
+              >
+                Register
+              </button>
+            )
+          )}
         </div>
       </div>
     </article>
