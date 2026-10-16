@@ -1073,3 +1073,47 @@ a {
   width: 100%;
   display: block;
 }
+
+/* Loading Skeletons */
+.skeleton-box {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 6px;
+}
+
+.skeleton-card-media {
+  aspect-ratio: 16 / 9;
+  border-radius: 0;
+}
+
+.skeleton-hero-media {
+  min-height: 320px;
+  border-radius: 0;
+}
+
+.skeleton-line-sm {
+  height: 14px;
+  width: 42%;
+}
+
+.skeleton-line-md {
+  height: 16px;
+  width: 75%;
+}
+
+.skeleton-line-lg {
+  height: 24px;
+  width: 90%;
+}
+
+.skeleton-btn {
+  height: 36px;
+  width: 110px;
+  margin-top: 0.75rem;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

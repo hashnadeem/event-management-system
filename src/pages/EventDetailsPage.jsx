@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchEventById, clearSelectedEvent } from '../features/events/eventsSlice';
+import LoadingSkeleton from '../components/LoadingSkeleton';
 
 function formatFullDate(localDate, localTime) {
   if (!localDate) return 'Date to be announced';
@@ -46,9 +47,7 @@ function EventDetailsPage() {
   if (detailLoading) {
     return (
       <section className="event-details-page">
-        <div className="loading-banner">
-          <span className="spinner-dot" /> Loading event details...
-        </div>
+        <LoadingSkeleton variant="detail" />
       </section>
     );
   }
