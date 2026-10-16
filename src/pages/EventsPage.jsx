@@ -5,6 +5,7 @@ import EventCard from '../components/EventCard';
 import CategoryStrip from '../components/CategoryStrip';
 import SearchFilterBar from '../components/SearchFilterBar';
 import Pagination from '../components/Pagination';
+import LoadingSkeleton from '../components/LoadingSkeleton';
 
 function EventsPage() {
   const dispatch = useDispatch();
@@ -55,11 +56,7 @@ function EventsPage() {
         </div>
       )}
 
-      {loading && (
-        <div className="loading-banner">
-          <span className="spinner-dot" /> Fetching live events from Ticketmaster...
-        </div>
-      )}
+      {loading && <LoadingSkeleton variant="grid" count={6} />}
 
       {!loading && !error && items.length === 0 && (
         <div className="empty-state-card">
