@@ -3,40 +3,24 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import ToastAlert from './components/ToastAlert';
+import HomePage from './pages/HomePage';
 import EventsPage from './pages/EventsPage';
 import EventDetailsPage from './pages/EventDetailsPage';
 import MyEventsPage from './pages/MyEventsPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
-
-function PlaceholderView({ title, subtitle }) {
-  return (
-    <section className="page-section">
-      <div className="section-header">
-        <h1>{title}</h1>
-        <p>{subtitle}</p>
-      </div>
-    </section>
-  );
-}
 
 function App() {
   return (
     <Router>
       <div className="app-shell">
         <Navbar />
+        <ToastAlert />
         <main className="main-container">
           <Routes>
-            <Route
-              path="/"
-              element={
-                <PlaceholderView
-                  title="Discover Live Events Around You"
-                  subtitle="Search concerts, sports, theatre, and festivals."
-                />
-              }
-            />
+            <Route path="/" element={<HomePage />} />
             <Route path="/events" element={<EventsPage />} />
             <Route path="/events/:id" element={<EventDetailsPage />} />
             <Route

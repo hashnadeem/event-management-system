@@ -7,6 +7,10 @@ function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated, currentUser } = useSelector((state) => state.auth);
+  const userKey = currentUser?.email || currentUser?.id || null;
+  const regCount = useSelector((state) =>
+    userKey ? (state.registrations.byUser[userKey] || []).length : 0
+  );
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -39,6 +43,7 @@ function Navbar() {
           </NavLink>
           <NavLink to="/my-events" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
             My Events
+            {isAuthenticated && regCount > 0 && <span className="nav-count-badge">{regCount}</span>}
           </NavLink>
         </nav>
 
