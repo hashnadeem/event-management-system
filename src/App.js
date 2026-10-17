@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import ToastAlert from './components/ToastAlert';
 import HomePage from './pages/HomePage';
 import EventsPage from './pages/EventsPage';
 import EventDetailsPage from './pages/EventDetailsPage';
@@ -16,6 +17,7 @@ function App() {
     <Router>
       <div className="app-shell">
         <Navbar />
+        <ToastAlert />
         <main className="main-container">
           <Routes>
             <Route path="/" element={<HomePage />} />
