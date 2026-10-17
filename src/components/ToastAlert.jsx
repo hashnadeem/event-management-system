@@ -15,7 +15,7 @@ function ToastAlert() {
     : null;
 
   useEffect(() => {
-    if (!activeMessage) return undefined;
+    if (!regFeedback && !authSuccess) return undefined;
 
     const timer = setTimeout(() => {
       if (regFeedback) dispatch(clearRegistrationFeedback());
@@ -23,7 +23,7 @@ function ToastAlert() {
     }, 4000);
 
     return () => clearTimeout(timer);
-  }, [activeMessage, regFeedback, authSuccess, dispatch]);
+  }, [regFeedback, authSuccess, dispatch]);
 
   if (!activeMessage) {
     return null;
@@ -50,3 +50,4 @@ function ToastAlert() {
 }
 
 export default ToastAlert;
+
